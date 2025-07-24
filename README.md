@@ -14,4 +14,4 @@ This project is a distributed job queue system designed to handle high-throughpu
 
 ## 🏗️ Architecture
 
-[Discributed_img](Distributive_system.png)
+![Discributed_img](Distributive_system.png)
