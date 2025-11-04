@@ -14,3 +14,4 @@ type Job struct {
 	RunAfter  time.Time         `json:"run_after,omitempty"`
 	Attempts  int               `json:"attempts,omitempty"`
 }
+

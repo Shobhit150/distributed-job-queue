@@ -25,7 +25,8 @@ distributed-job-queue
         main.go
     worker
     db
-      db.go
+      db.go       //Structure of job here
+      Broker.go   //Defined Interface
     kafka
       comsumer/
       producer/
@@ -36,11 +37,14 @@ distributed-job-queue
 ## Job structure
 
 type Job struct {
-    ID        int64           `json:"id"`
-    Payload   json.RawMessage `json:"payload"` // could be any data (use []byte or map[string]interface{} if you want)
-    Status    string          `json:"status"`  // pending, processing, success, failed
-    Retries   int             `json:"retries"`
-    ErrorMsg  string          `json:"error_msg,omitempty"`
-    CreatedAt time.Time       `json:"created_at"`
-    UpdatedAt time.Time       `json:"updated_at"`
+	ID        string            `json:"id"`
+	Type      string            `json:"type"`
+	Payload   []byte            `json:"payload"`
+	TenantID  string            `json:"tenant_id,omitempty"`
+	Priority  int               `json:"priority,omitempty"`
+	DedupKey  string            `json:"dedup_key,omitempty"`
+	Meta      map[string]string `json:"meta,omitempty"`
+	CreatedAt time.Time         `json:"created_at"`
+	RunAfter  time.Time         `json:"run_after,omitempty"`
+	Attempts  int               `json:"attempts,omitempty"`
 }
