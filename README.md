@@ -25,8 +25,8 @@ distributed-job-queue
         main.go
     worker
     db
-      db.go       //Structure of job here
-      Broker.go   //Defined Interface
+      db.go       // Structure of job here
+      Broker.go   // Defined Broker Interface
     kafka
       comsumer/
       producer/
@@ -35,7 +35,7 @@ distributed-job-queue
 </pre>
 
 ## Job structure
-
+<pre>
 type Job struct {
 	ID        string            `json:"id"`
 	Type      string            `json:"type"`
@@ -48,3 +48,17 @@ type Job struct {
 	RunAfter  time.Time         `json:"run_after,omitempty"`
 	Attempts  int               `json:"attempts,omitempty"`
 }
+</pre>
+
+<pre>
+{
+	Enqueue(ctx context.Context, j *Job) error
+	Dequeue(ctx context.Context, consumer string, max int) error
+	Ack(ctx context.Context, jobID string) error
+	Nack(ctx context.Context, jobID string, requeue bool) error
+	Inspect(ctx context.Context, jobID string) (*Job, error)
+	Cancel(ctx context.Context, jobID string) error
+	Requeue(ctx context.Context, jobID string, runAfter time.Time) error
+	Close() error  
+}
+</pre>
