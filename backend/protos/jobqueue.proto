@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package jobqueue.v1;
+
+option go_package = "backend/protos;proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// ----------------------
+// Core message
+// ----------------------
+
+message Job {
+  string id = 1;
+  string type = 2;
+  bytes payload = 3;
+  string tenant_id = 4;
+  int32 priority = 5;
+  string dedup_key = 6;
+  map<string, string> meta = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp run_after = 9;
+  int32 attempts = 10;
+}
+
+// ----------------------
+// RPC messages
+// ----------------------
+
+message EnqueueRequest {
+  Job job = 1;
+}
+
+message EnqueueResponse {
+  string id = 1;
+}
+
+message DequeueRequest {
+  string consumer = 1;
+}
+
+message DequeueResponse {
+  repeated Job jobs = 1;
+}
+
+message AckRequest {
+  string id = 1;
+}
+
+message NackRequest {
+  string id = 1;
+  bool requeue = 2;
+}
+
+// ----------------------
+// Service definition
+// ----------------------
+
+service JobQueue {
+  rpc Enqueue(EnqueueRequest) returns (EnqueueResponse);
+  rpc Dequeue(DequeueRequest) returns (DequeueResponse);
+  rpc Ack(AckRequest) returns (google.protobuf.Empty);
+  rpc Nack(NackRequest) returns (google.protobuf.Empty);
+}
