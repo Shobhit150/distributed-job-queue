@@ -62,4 +62,22 @@ func (m *memBroker) Dequeue(ctx context.Context, consumer string) ([]*Job, error
 	return ready, nil
 }
 
-// func (m *memBroker) Nack(ctx context.)
+func (m *memBroker) Nack(ctx context.Context, jobID string, requeue bool) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	j,ok := m.inflight[jobID]
+
+	if !ok {
+		return ErrNotFound
+	}
+	delete(m.inflight, jobID)
+
+	if requeue {
+		j.Attempts++
+		j.RunAfter = time.Now().Add(time.Second * time.Duration(1 << uint(j.Attempts)))
+		m.queue = append(m.queue, j)
+	} else {
+		delete(m.store, jobID)
+	}
+} 
