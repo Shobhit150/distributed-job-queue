@@ -54,7 +54,7 @@ type Job struct {
 type Broker interface {
     Enqueue(ctx context.Context, j *Job) (string, error)
     BatchEnqueue(ctx context.Context, jobs []*Job) ([]string, error)
-    Dequeue(ctx context.Context, consumer string, max int) ([]*Job, error) // ✅ match
+    Dequeue(ctx context.Context, consumer string, max int) ([]*Job, error)
     Ack(ctx context.Context, jobID string) error
     Nack(ctx context.Context, jobID string, requeue bool) error
     Inspect(ctx context.Context, jobID string) (*Job, error)
