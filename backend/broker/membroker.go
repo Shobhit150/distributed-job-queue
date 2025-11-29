@@ -63,7 +63,7 @@ func (m *memBroker) Dequeue(ctx context.Context, consumer string) ([]*Job, error
 }
 
 func (m *memBroker) Ack( ctx context.Context, jobID string) error {
-	
+	m.mu.Lock()
 }
 
 func (m *memBroker) Nack(ctx context.Context, jobID string, requeue bool) error {
